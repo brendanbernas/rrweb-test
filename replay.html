@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>Display rrweb recording</title>
+    <script>
+
+    </script>
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>
+  </head>
+  <body>
+
+    <input id="uploader" type="file"/>
+    <input id="go" type="button" value="Play">
+    <div id="player"></div>
+
+    <script>
+
+      // Remove past web players from the page
+      function clearPlayer(){
+        let player = document.getElementById("player");
+        let child = player.lastElementChild;  
+        while (child) { 
+            player.removeChild(child); 
+            child = player.lastElementChild; 
+        }
+      }
+
+      function playRecording(){
+        clearPlayer();
+        
+        let file = document.getElementById("uploader").files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function (evt) {
+              try{
+                let events = JSON.parse(evt.target.result);
+                new rrwebPlayer({
+                  target: document.getElementById("player"),
+                  data: {
+                    events,
+                    autoPlay: true,
+                  },
+                });
+              } catch(err) {
+                alert(err);
+              }
+            }
+        }
+      }
+
+      document.getElementById("go").onclick = playRecording;
+    </script>
+
+  </body>
+</html>
